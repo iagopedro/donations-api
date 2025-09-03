@@ -72,6 +72,10 @@ public class Donation {
     
     @OneToMany(mappedBy = "donation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Match> matches;
+
+
+
+
     
     public enum DonationStatus {
         AVAILABLE,
@@ -97,6 +101,10 @@ public class Donation {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+
+
+    
     
     // Getters and Setters
     public Long getId() {

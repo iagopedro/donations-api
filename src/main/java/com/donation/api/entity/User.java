@@ -70,13 +70,17 @@ public class User implements UserDetails {
     
     @OneToMany(mappedBy = "requester", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Match> matches;
+
+
+
+
     
     public User() {
         this.createdAt = LocalDateTime.now();
     }
     
     public User(String name, String email, String password) {
-        this();
+        this(); // Calls the default constructor to set createdAt
         this.name = name;
         this.email = email;
         this.password = password;
@@ -86,6 +90,10 @@ public class User implements UserDetails {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+
+
+
     
     // UserDetails implementation
     @Override
@@ -117,6 +125,10 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
+    
+
+
+
     
     // Getters and Setters
     public Long getId() {
