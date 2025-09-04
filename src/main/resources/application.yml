@@ -1,15 +1,21 @@
+# application.yml
 spring:
   application:
     name: donation-api
-  
-  # Configurações do banco de dados
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+---
+# Perfil de desenvolvimento
+spring:
+  config:
+    activate:
+      on-profile: dev
   datasource:
     url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
+    driver-class-name: org.h2.Driver
     username: sa
     password: password
-  
-  # Configurações JPA/Hibernate
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -17,44 +23,75 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
-  
-  # Configurações H2 Console (para desenvolvimento)
+        '[format_sql]': true
   h2:
     console:
       enabled: true
       path: /h2-console
   
-  # Configurações de Security
+  # Configurações de Security (dev)
   security:
     user:
       name: admin
       password: admin
 
-# Configurações JWT
+# Configurações de logging (dev)
+logging:
+  level:
+    '[com.donation.api]': DEBUG
+    '[org.springframework.security]': DEBUG
+
+# Configurações JWT (dev)
 app:
   jwt:
     secret: mySecretKey123456789012345678901234567890
-    expiration: 86400 # 24 horas em segundos
+    expiration: 86400
+
+---
+# Perfil de produção
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/donation_api}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+
+# Configurações JWT (prod)
+app:
+  jwt:
+    secret: ${JWT_SECRET:mySecretKey123456789012345678901234567890}
+    expiration: ${JWT_EXPIRATION:86400}
+
+# Configurações do servidor
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /
 
 # Configurações do Swagger/OpenAPI
 springdoc:
   api-docs:
-    path: /api-docs
+    path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
     disable-swagger-default-url: true
     operations-sorter: method
   paths-to-match: /api/**
 
-# Configurações do servidor
-server:
-  port: 8080
-  servlet:
-    context-path: /
-
-# Configurações de logging
-logging:
-  level:
-    com.donation.api: DEBUG
-    org.springframework.security: DEBUG
+# Configurações do Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
