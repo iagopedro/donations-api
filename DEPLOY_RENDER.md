@@ -205,25 +205,37 @@ Se aparecer erro sobre `mvnw` ou `.mvn/`:
 2. **Otimize queries SQL**
 3. **Configure cache** se necessário
 
-### JDBC URL Format Error
-**Erro:** `Driver org.postgresql.Driver claims to not accept jdbcUrl, postgresql://...`
+### JDBC URL Format Error (ATUALIZADO)
+**Erro:** `Driver org.postgresql.Driver claims to not accept jdbcUrl, jdbc:postgresql://...`
 
-**Causa:** O Render fornece a URL do PostgreSQL no formato `postgresql://`, mas o Spring Boot precisa do formato JDBC `jdbc:postgresql://`.
+**Causa:** O Render fornece a URL do PostgreSQL no formato `postgresql://`, mas o Spring Boot precisa do formato JDBC `jdbc:postgresql://`. Configurações simples de concatenação podem falhar.
 
-**Solução:** 
-- Use `url: jdbc:${DATABASE_URL}` no `application.yml`
-- Isso automaticamente converte `postgresql://user:pass@host/db` para `jdbc:postgresql://user:pass@host/db`
+**Solução Implementada:** 
+- Criada classe `RenderDataSourceConfig.java` que automaticamente converte a URL
+- Remove configuração conflitante do `application.yml` para o perfil `render`
+- Configuração programática mais robusta
 
-```yaml
-spring:
-  config:
-    activate:
-      on-profile: render
-  datasource:
-    # Converter URL do Render para formato JDBC
-    url: jdbc:${DATABASE_URL}
-    driver-class-name: org.postgresql.Driver
+```java
+@Configuration
+@Profile("render")
+public class RenderDataSourceConfig {
+    @Bean
+    @Primary
+    public DataSourceProperties dataSourceProperties() {
+        String databaseUrl = System.getenv("DATABASE_URL");
+        if (databaseUrl != null && databaseUrl.startsWith("postgresql://")) {
+            String jdbcUrl = databaseUrl.replace("postgresql://", "jdbc:postgresql://");
+            properties.setUrl(jdbcUrl);
+        }
+        return properties;
+    }
+}
 ```
+
+**Arquivos modificados:**
+- ✅ `RenderDataSourceConfig.java` (novo) - Conversão automática da URL
+- ✅ `application.yml` - Removida configuração datasource do perfil render
+- ✅ `application.yml` - Removida configuração CORS inválida
 
 ## 💰 Custos
 
