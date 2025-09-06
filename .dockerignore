@@ -1,0 +1,77 @@
+# .dockerignore - Arquivos a serem ignorados no build do Docker
+
+# Diretórios de build
+target/
+build/
+out/
+
+# Arquivos de configuração local
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.settings/
+.project
+.classpath
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+logs/
+
+# Documentação e arquivos de exemplo
+README.md
+README_*.md
+docs/
+*.md
+
+# Arquivos do Postman
+*_Postman_Collection.json
+*_Environment.json
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# Node modules (se existir)
+node_modules/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Maven wrapper (opcional, pode ser necessário)
+# .mvn/
+
+# Dockerfile (evitar loops)
+Dockerfile*
+docker-compose*
+
+# Configurações específicas de deploy
+render.yaml
+railway.toml
+.dockerignore
+
+# Arquivos de backup
+*.backup
+*.old

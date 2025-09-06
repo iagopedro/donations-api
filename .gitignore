@@ -155,10 +155,20 @@ build/
 application-local.yml
 application-local.properties
 application-dev.yml
-application-prod.yml
+# application-prod.yml (pode querer versionar para Render)
+
+# Railway deployment files (opcional - pode querer versionar)
+# railway.toml
+
+# Render deployment files (pode querer versionar)
+# render.yaml
+
+# Docker local builds
+.docker/
+docker-volumes/
 
 # Docker
-.dockerignore
+# .dockerignore (comentado para versionar)
 Dockerfile.local
 
 # Test reports
