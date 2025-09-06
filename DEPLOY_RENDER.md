@@ -205,6 +205,26 @@ Se aparecer erro sobre `mvnw` ou `.mvn/`:
 2. **Otimize queries SQL**
 3. **Configure cache** se necessário
 
+### JDBC URL Format Error
+**Erro:** `Driver org.postgresql.Driver claims to not accept jdbcUrl, postgresql://...`
+
+**Causa:** O Render fornece a URL do PostgreSQL no formato `postgresql://`, mas o Spring Boot precisa do formato JDBC `jdbc:postgresql://`.
+
+**Solução:** 
+- Use `url: jdbc:${DATABASE_URL}` no `application.yml`
+- Isso automaticamente converte `postgresql://user:pass@host/db` para `jdbc:postgresql://user:pass@host/db`
+
+```yaml
+spring:
+  config:
+    activate:
+      on-profile: render
+  datasource:
+    # Converter URL do Render para formato JDBC
+    url: jdbc:${DATABASE_URL}
+    driver-class-name: org.postgresql.Driver
+```
+
 ## 💰 Custos
 
 ### Plano Gratuito
