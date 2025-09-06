@@ -205,37 +205,42 @@ Se aparecer erro sobre `mvnw` ou `.mvn/`:
 2. **Otimize queries SQL**
 3. **Configure cache** se necessário
 
-### JDBC URL Format Error (ATUALIZADO)
-**Erro:** `Driver org.postgresql.Driver claims to not accept jdbcUrl, jdbc:postgresql://...`
+### JDBC URL Format Error (VERSÃO FINAL)
+**Erro:** `JDBC URL invalid port number: lMoSnth7Mxa9xgzeAgYONlcQxpAmHE8D@dpg-d2u9p815pdvs73a9l190-a`
 
-**Causa:** O Render fornece a URL do PostgreSQL no formato `postgresql://`, mas o Spring Boot precisa do formato JDBC `jdbc:postgresql://`. Configurações simples de concatenação podem falhar.
+**Causa Raiz:** O Render fornece URL como `postgresql://user:pass@host/db` mas sem porta explícita. O PostgreSQL JDBC driver interpreta incorretamente a senha como número da porta.
 
 **Solução Implementada:** 
-- Criada classe `RenderDataSourceConfig.java` que automaticamente converte a URL
-- Remove configuração conflitante do `application.yml` para o perfil `render`
-- Configuração programática mais robusta
+- Parser completo da URL usando `java.net.URI`
+- Extração correta de username, password, host, port e database
+- Construção manual da URL JDBC com porta padrão 5432
+- Logs detalhados para debug
 
 ```java
 @Configuration
 @Profile("render")
 public class RenderDataSourceConfig {
     @Bean
-    @Primary
     public DataSourceProperties dataSourceProperties() {
-        String databaseUrl = System.getenv("DATABASE_URL");
-        if (databaseUrl != null && databaseUrl.startsWith("postgresql://")) {
-            String jdbcUrl = databaseUrl.replace("postgresql://", "jdbc:postgresql://");
-            properties.setUrl(jdbcUrl);
-        }
-        return properties;
+        URI uri = new URI(databaseUrl);
+        String username = uri.getUserInfo().split(":")[0];
+        String password = uri.getUserInfo().split(":")[1];
+        String host = uri.getHost();
+        int port = uri.getPort() != -1 ? uri.getPort() : 5432;
+        String database = uri.getPath().substring(1);
+        
+        String jdbcUrl = String.format("jdbc:postgresql://%s:%d/%s", host, port, database);
+        properties.setUrl(jdbcUrl);
+        properties.setUsername(username);
+        properties.setPassword(password);
     }
 }
 ```
 
-**Arquivos modificados:**
-- ✅ `RenderDataSourceConfig.java` (novo) - Conversão automática da URL
-- ✅ `application.yml` - Removida configuração datasource do perfil render
-- ✅ `application.yml` - Removida configuração CORS inválida
+**Logs Adicionados:**
+- ✅ URL original vs convertida
+- ✅ Componentes extraídos (host, port, database, username)
+- ✅ Facilitam debug de problemas de conexão
 
 ## 💰 Custos
 
