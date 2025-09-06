@@ -69,12 +69,10 @@ Este guia explica como fazer o deploy da API de Doações no Render usando conta
 
 3. **Configurar Variáveis de Ambiente**:
    ```
-   SPRING_PROFILES_ACTIVE=prod
+   SPRING_PROFILES_ACTIVE=render
    PORT=8080
    JWT_SECRET=[gerar chave forte]
    DATABASE_URL=[será preenchido após criar DB]
-   DB_USERNAME=[será preenchido após criar DB]
-   DB_PASSWORD=[será preenchido após criar DB]
    ```
 
 4. **Criar Banco de Dados**:
@@ -85,8 +83,9 @@ Este guia explica como fazer o deploy da API de Doações no Render usando conta
    - **User**: `donations_user`
 
 5. **Conectar Banco ao Serviço**:
-   - Copie as credenciais do banco
-   - Cole nas variáveis de ambiente do web service
+   - Copie a **CONNECTION STRING** do banco
+   - Cole na variável `DATABASE_URL` do web service
+   - **Importante**: Use a CONNECTION STRING completa, não separe user/password
 
 ## 🔧 Configurações Importantes
 
@@ -94,12 +93,10 @@ Este guia explica como fazer o deploy da API de Doações no Render usando conta
 
 | Variável | Descrição | Exemplo |
 |----------|-----------|---------|
-| `SPRING_PROFILES_ACTIVE` | Perfil ativo | `prod` |
+| `SPRING_PROFILES_ACTIVE` | Perfil ativo | `render` |
 | `PORT` | Porta do serviço | `8080` |
 | `JWT_SECRET` | Chave secreta JWT | `sua-chave-super-secreta-aqui` |
-| `DATABASE_URL` | URL do PostgreSQL | `postgresql://user:pass@host:5432/db` |
-| `DB_USERNAME` | Usuário do banco | `donations_user` |
-| `DB_PASSWORD` | Senha do banco | `senha-do-banco` |
+| `DATABASE_URL` | URL completa do PostgreSQL | `postgresql://user:pass@host:5432/db` |
 
 ### Health Check
 - **Path**: `/actuator/health`
@@ -191,9 +188,11 @@ Para atualizar a aplicação:
 3. **Verifique logs de aplicação**
 
 ### Erro de Conexão com Banco
-1. **Verifique credenciais do PostgreSQL**
-2. **Confirme se o banco está ativo**
-3. **Teste conexão manual**
+1. **Verifique a CONNECTION STRING do PostgreSQL**
+2. **Use a URL completa**: `postgresql://user:pass@host:port/database`
+3. **Não separe credenciais**: Render fornece URL completa
+4. **Confirme se o banco está ativo**
+5. **Verifique perfil**: Use `SPRING_PROFILES_ACTIVE=render`
 
 ### Erro Maven Wrapper
 Se aparecer erro sobre `mvnw` ou `.mvn/`:
