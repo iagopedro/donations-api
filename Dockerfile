@@ -7,11 +7,8 @@ RUN apk add --no-cache maven
 # Definir diretório de trabalho
 WORKDIR /app
 
-# Copiar arquivos de configuração do Maven primeiro (para cache de dependências)
+# Copiar arquivo de configuração do Maven primeiro (para cache de dependências)
 COPY pom.xml .
-COPY .mvn/ .mvn/
-COPY mvnw .
-COPY mvnw.cmd .
 
 # Baixar dependências (camada separada para cache)
 RUN mvn dependency:go-offline -B
