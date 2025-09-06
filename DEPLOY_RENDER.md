@@ -180,8 +180,10 @@ Para atualizar a aplicação:
 
 **Problemas Comuns de Build:**
 - ❌ **Imagem não encontrada**: Usar `eclipse-temurin` em vez de `openjdk` (descontinuada)
+- ❌ **Maven Wrapper não encontrado**: Usar Maven diretamente em vez de mvnw
 - ❌ **Dependência faltando**: Verificar `pom.xml` 
-- ❌ **Timeout**: Plano gratuito tem limite de tempo de build
+- ❌ **Timeout**: Plano gratuito tem limite de tempo de build (15 min)
+- ❌ **Memória insuficiente**: Otimizar configurações JVM
 
 ### Aplicação não Inicia
 1. **Verifique variáveis de ambiente**
@@ -192,6 +194,12 @@ Para atualizar a aplicação:
 1. **Verifique credenciais do PostgreSQL**
 2. **Confirme se o banco está ativo**
 3. **Teste conexão manual**
+
+### Erro Maven Wrapper
+Se aparecer erro sobre `mvnw` ou `.mvn/`:
+1. **Normal**: Projeto não usa Maven Wrapper
+2. **Solução**: Dockerfile usa Maven diretamente
+3. **Verificação**: Confirme que `pom.xml` existe
 
 ### Performance Lenta
 1. **Considere upgrade do plano** (plano grátis tem limitações)
