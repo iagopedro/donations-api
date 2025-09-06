@@ -242,6 +242,29 @@ public class RenderDataSourceConfig {
 - ✅ Componentes extraídos (host, port, database, username)
 - ✅ Facilitam debug de problemas de conexão
 
+### JWT Configuration Missing
+**Erro:** `Could not resolve placeholder 'app.jwt.secret' in value "${app.jwt.secret}"`
+
+**Causa:** Propriedades JWT não estão disponíveis no perfil render ou não são carregadas corretamente.
+
+**Solução:** 
+- Adicionada configuração JWT ao perfil render no `application.yml`
+- Melhorada resolução de propriedades no `JwtUtil.java` com fallback direto para variáveis de ambiente
+
+```yaml
+# application.yml - perfil render
+app:
+  jwt:
+    secret: ${JWT_SECRET:mySecretKey123456789012345678901234567890}
+    expiration: ${JWT_EXPIRATION:86400}
+```
+
+```java
+// JwtUtil.java - fallback duplo
+@Value("${app.jwt.secret:${JWT_SECRET:mySecretKey123456789012345678901234567890}}")
+private String secret;
+```
+
 ## 💰 Custos
 
 ### Plano Gratuito
