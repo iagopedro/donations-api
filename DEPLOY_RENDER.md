@@ -13,7 +13,8 @@ Este guia explica como fazer o deploy da API de Doações no Render usando conta
 
 ### 1. **Dockerfile**
 - ✅ Multi-stage build para otimização
-- ✅ Baseado em OpenJDK 17
+- ✅ Baseado em Eclipse Temurin 17 (OpenJDK oficial)
+- ✅ Imagens Alpine para menor tamanho
 - ✅ Usuário não-root para segurança
 - ✅ Health check configurado
 - ✅ Otimizações JVM para containers
@@ -171,11 +172,16 @@ Para atualizar a aplicação:
 ### Build Falha
 1. **Verifique os logs** no dashboard do Render
 2. **Certifique-se** que todas as dependências estão no `pom.xml`
-3. **Teste localmente**:
+3. **Teste localmente** (se tiver Docker):
    ```bash
    docker build -t donations-api .
    docker run -p 8080:8080 donations-api
    ```
+
+**Problemas Comuns de Build:**
+- ❌ **Imagem não encontrada**: Usar `eclipse-temurin` em vez de `openjdk` (descontinuada)
+- ❌ **Dependência faltando**: Verificar `pom.xml` 
+- ❌ **Timeout**: Plano gratuito tem limite de tempo de build
 
 ### Aplicação não Inicia
 1. **Verifique variáveis de ambiente**
