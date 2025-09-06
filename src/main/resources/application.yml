@@ -55,8 +55,6 @@ spring:
       on-profile: prod
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/donation_api}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -81,9 +79,8 @@ spring:
     activate:
       on-profile: render
   datasource:
+    # Usar URL JDBC direta do Render
     url: ${DATABASE_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 5
