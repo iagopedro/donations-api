@@ -1,8 +1,8 @@
 # Dockerfile para Spring Boot API - Otimizado para Render
-FROM openjdk:17-jdk-slim AS build
+FROM eclipse-temurin:17-jdk-alpine AS build
 
 # Instalar Maven
-RUN apt-get update && apt-get install -y maven
+RUN apk add --no-cache maven
 
 # Definir diretório de trabalho
 WORKDIR /app
@@ -23,10 +23,13 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Estágio de runtime - imagem menor
-FROM openjdk:17-jre-slim
+FROM eclipse-temurin:17-jre-alpine
+
+# Instalar curl para health checks
+RUN apk add --no-cache curl
 
 # Criar usuário não-root para segurança
-RUN addgroup --system spring && adduser --system spring --ingroup spring
+RUN addgroup -g 1001 spring && adduser -u 1001 -G spring -s /bin/sh -D spring
 
 # Definir diretório de trabalho
 WORKDIR /app
